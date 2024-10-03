@@ -22,4 +22,4 @@ export const WrapperTextPrice = styled.div`
     color:rgb(56, 56, 61);
     background:rgb(238, 238, 238);
     width:fit-content;
-`
+`   

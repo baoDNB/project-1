@@ -1,6 +1,6 @@
 import React from "react";
 import TypeProduct from "../../components/TypeProduct/TypeProduct";
-import { WrapperButtonMore, WrapperTypeProduct } from "./style";
+import { WrapperButtonMore, WrapperProducts, WrapperTypeProduct } from "./style";
 import SliderComponent from "../../components/SliderComponent/SliderComponent";
 import slider1 from "../../assets/images/silder1.webp";
 import slider2 from "../../assets/images/slider2.webp";
@@ -10,7 +10,7 @@ const HomePage=()=>{
     const arr=['Trang chủ', 'Sản phẩm']
     return(
         <>
-        <div style={{padding:'0 120px'}}>
+        <div style={{width:'1270px',margin:'0 auto'}}>
             <WrapperTypeProduct>
                 {arr.map((item)=>{
                     return(
@@ -19,9 +19,10 @@ const HomePage=()=>{
                 })}
             </WrapperTypeProduct>
         </div>
-        <div id="container" style={{padding:'0', height:'1000px',width:'100%'}}>
+        <div className='body' style={{width:'100%',backgroundColor:'#efefef'}}>
+            <div id="container" style={{padding:'0', height:'1000px',width:'1270px',margin:'0 auto'}}>
             <SliderComponent arrImages={[slider1, slider2, slider3]}/>
-            <div style={{marginTop:'20px',display:'flex', alignItems:'center', gap:'20px', padding:'0 120px', flexWrap:'wrap'}}>
+            <WrapperProducts>           
                 <CardComponent/>
                 <CardComponent/>
                 <CardComponent/>
@@ -29,8 +30,7 @@ const HomePage=()=>{
                 <CardComponent/>
                 <CardComponent/>
                 <CardComponent/>
-
-            </div>
+            </WrapperProducts>  
             <div style={{width:'100%',display:'flex',justifyContent:'center',marginTop:'10px' }}>
                 <WrapperButtonMore textButton="Xem thêm" type="outline" styleButton={{
                     border:'1px solid rgb(11,116,229)', color:'rgb(11,116,229)',
@@ -38,6 +38,7 @@ const HomePage=()=>{
                 }}
                 styleTextButton={{fontWeight:500}}/>
             </div>
+        </div>
         </div>
         </>
     )

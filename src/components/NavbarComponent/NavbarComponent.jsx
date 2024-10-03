@@ -1,5 +1,5 @@
 import React from "react"
-import { WrapperContent, WrapperLabelText, WrapperTextPrice, WrapperTextValue } from "./style"
+import { WrapperContent, WrapperLabelText, WrapperTextValue } from "./style"
 import { Checkbox, Rate} from "antd"
 const NavbarComponent = () => {
     const onChange =()=>{
