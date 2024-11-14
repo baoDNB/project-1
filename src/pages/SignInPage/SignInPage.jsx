@@ -41,7 +41,7 @@ const SignInPage = () => {
     }
   },[isSuccess])
 
-  const handleGetDetailsUser =async(id, token)=>{
+  const handleGetDetailsUser = async (id, token)=>{
     const res = await UserService.getDetailsUser(id,token)
     dispatch(updateUser({...res?.data, access_token: token}))
   }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Badge,  Col, Popover } from 'antd';
 import { WrapperContentPopup, WrapperHeader,WrapperHeaderAccount,WrapperTextHeader,WrapperTextHeaderSmall} from "./style";
 import  ButtonInputSearch  from "../ButtonInputSearch/ButtonInputSearch";
@@ -12,10 +12,12 @@ import { resetUser } from '../../redux/silces/userSlice'
 import Loading from "../LoadingComponent/Loading";
 
 
-const HeaderComponent=()=>{
+const HeaderComponent=( {isHiddenSearch = false, isHiddenCart= false})=>{
     const navigate = useNavigate()
-    const user = useSelector(state => state.user)
+    const user = useSelector((state) => state.user)
     const dispatch = useDispatch()
+    const [userName,setUserName]= useState('')
+    const [userAvatar,setUserAvatar]= useState('')
     const [loading, setLoading] = useState(false)
     const handleNavigateLogin =()=>{
         navigate('/sign-in')
@@ -26,10 +28,21 @@ const HeaderComponent=()=>{
         dispatch(resetUser())
         setLoading(false)
     }
+    useEffect(()=>{
+        setLoading(true)
+        setUserName(user?.name)
+        setUserAvatar(user?.avatar)
+        setLoading(false)
+    },[user?.name, user?.avatar])
     const content = (
         <div>
-          <WrapperContentPopup onClick={handleLogout}>Đăng xuất</WrapperContentPopup>
           <WrapperContentPopup onClick={()=> navigate('/profile-user')}>Thông tin người dùng</WrapperContentPopup>
+          {user?.isAdmin&&(
+                      <WrapperContentPopup onClick={()=> navigate('/system/admin')}>Quản lý hệ thống</WrapperContentPopup>
+
+          )}
+          <WrapperContentPopup onClick={handleLogout}>Đăng xuất</WrapperContentPopup>
+
         </div>
       );
 
@@ -41,23 +54,33 @@ const HeaderComponent=()=>{
                         SIEUTHIDOGOM
                     </WrapperTextHeader>
                 </Col>
-                <Col span={12}>
-                    <ButtonInputSearch
-                        placeholder="Tìm kiếm sản phẩm"
-                        textButton="Tìm kiếm"
-                        size="large"
-                        bordered ={false}
+                <Col span = {13}>
+                {!isHiddenSearch && (
+                <ButtonInputSearch
+                    size="large"
+                    textButton="Tìm kiếm"
+                    placeholder='input search text'
+                    bordered={false}
                     />
-                </Col>
+                )}
+            </Col>
                 <Col span={6} style={{display:'flex', gap:'20px', alignItems:'center' }}>
                 <Loading isLoading={loading}>
                     <WrapperHeaderAccount>
-                        <UserOutlined style={{fontSize:`30px` }}/>
-                        {user?.name ?(
+                        {userAvatar ?(
+                            <img src={userAvatar} alt="avatar" style={{
+                                height:'30px',
+                                width:'30px',
+                                borderRadius:'50%',
+                                objectFit:'cover'
+                              }}/>
+                        ):(
+                            <UserOutlined style={{fontSize:`30px` }}/>
+                        )}
+                        {user?.access_token ?(
                             <>
-                                
                                 <Popover content={content} trigger="click">
-                                    <div style={{cursor: 'pointer'}}>{user.name}</div>
+                                    <div style={{cursor: 'pointer'}}>{userName?.length ? userName : user?.email}</div>
                                 </Popover>
                             </>
                         ):(
@@ -73,14 +96,16 @@ const HeaderComponent=()=>{
                         
                     </WrapperHeaderAccount>
                 </Loading>
+                {!isHiddenCart &&(
                     <div>
-                        <div>
-                            <Badge count={4} size="small">
-                                <ShoppingCartOutlined style={{fontSize:`30px`, color:'#000',gap:'20px' }} />
-                            </Badge>
-                            <WrapperTextHeaderSmall> Giỏ hàng  </WrapperTextHeaderSmall>
-                        </div>
+                    <div>
+                        <Badge count={4} size="small">
+                            <ShoppingCartOutlined style={{fontSize:`30px`, color:'#000',gap:'20px' }} />
+                        </Badge>
+                        <WrapperTextHeaderSmall> Giỏ hàng  </WrapperTextHeaderSmall>
                     </div>
+                </div>
+                )}
                 </Col>
             </WrapperHeader>
         </div>
