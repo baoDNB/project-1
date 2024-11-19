@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import * as UserService from '../../services/UserService';
 import { resetUser } from '../../redux/silces/userSlice'
 import Loading from "../LoadingComponent/Loading";
+import { searchProduct } from "../../redux/silces/productSlice";
 
 
 const HeaderComponent=( {isHiddenSearch = false, isHiddenCart= false})=>{
@@ -18,6 +19,7 @@ const HeaderComponent=( {isHiddenSearch = false, isHiddenCart= false})=>{
     const dispatch = useDispatch()
     const [userName,setUserName]= useState('')
     const [userAvatar,setUserAvatar]= useState('')
+    const[search,setSearch] = useState('')
     const [loading, setLoading] = useState(false)
     const handleNavigateLogin =()=>{
         navigate('/sign-in')
@@ -46,6 +48,11 @@ const HeaderComponent=( {isHiddenSearch = false, isHiddenCart= false})=>{
         </div>
       );
 
+    const onSearch =(e) => {
+        setSearch(e.target.value)
+        dispatch(searchProduct(e.target.value))
+    }
+
     return(
         <div>
             <WrapperHeader>
@@ -61,6 +68,7 @@ const HeaderComponent=( {isHiddenSearch = false, isHiddenCart= false})=>{
                     textButton="Tìm kiếm"
                     placeholder='input search text'
                     bordered={false}
+                    onChange={onSearch}
                     />
                 )}
             </Col>
@@ -97,14 +105,12 @@ const HeaderComponent=( {isHiddenSearch = false, isHiddenCart= false})=>{
                     </WrapperHeaderAccount>
                 </Loading>
                 {!isHiddenCart &&(
-                    <div>
-                    <div>
+                    <div onClick={() => navigate('/order')} style={{cursor: 'pointer'}}>
                         <Badge count={4} size="small">
                             <ShoppingCartOutlined style={{fontSize:`30px`, color:'#000',gap:'20px' }} />
                         </Badge>
                         <WrapperTextHeaderSmall> Giỏ hàng  </WrapperTextHeaderSmall>
                     </div>
-                </div>
                 )}
                 </Col>
             </WrapperHeader>

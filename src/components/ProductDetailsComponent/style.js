@@ -15,8 +15,8 @@ export const WrapperStyleNameProduct = styled.h1`
     font-weight:300;
     line-height:32px;
     word-break:break-word;
-`   
-export const WrapperStyleTextSell= styled.span`
+`
+export const WrapperStyleTextSell = styled.span`
     font-size:15px;
     line-height:24px;
     color: rgb(120, 120, 120);
@@ -59,10 +59,15 @@ export const WrapperQualityProduct = styled.div`
     border-radius:4px
 `
 
-export const WrapperInputNumber =styled(InputNumber)`
-    &.ant-input-number.css-dev-only-do-not-override-1gwfwyx.ant-input-number-outlined{
-        width:60px;
-        border-top:none;
-        border-bottom:none;
+export const WrapperInputNumber = styled(InputNumber)`
+  &.ant-input-number {
+    width: 40px;
+    border-top: none;
+    border-bottom: none;
+
+    /* Ẩn handler tăng/giảm */
+    .ant-input-number-handler-wrap {
+      display: none;
     }
-`
+  }
+`;

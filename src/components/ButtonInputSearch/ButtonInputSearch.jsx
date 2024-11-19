@@ -13,11 +13,11 @@ const ButtonInputSearch=(props)=>{
         <div style={{display:'flex', backgroundColor : '#fff'}}>
             <InputComponent 
                 size={size} 
-                
                 placeholder={placeholder} 
                 style={{ backgroundColor : backgroundColorInput,
-                    borderRadius:0,
-                }} />
+                borderRadius:0,
+                }}
+                {...props} />
             <ButtonComponent
                 size={size} 
                 styleButton={{backgroundColor:backgroundColorButton,
