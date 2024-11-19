@@ -9,12 +9,17 @@ import * as ProductService from '../../services/ProductService'
 import { useQuery } from '@tanstack/react-query'
 import Loading from '../LoadingComponent/Loading'
 import { render } from '@testing-library/react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { Navigate, useLocation, useNavigate } from 'react-router'
+import { addOrderProduct } from '../../redux/silces/orderSilce'
 
 
 function ProductDetailsComponent({ idProduct }) {
     const [numProduct, setNumProduct] = useState(1)
-    const user = useSelector((state)=> state.user)
+    const user = useSelector((state) => state.user)
+    const navigate = useNavigate()
+    const location = useLocation()
+    const dispatch = useDispatch()
     const onChange = (value) => {
         setNumProduct(Number(value))
     }
@@ -25,6 +30,7 @@ function ProductDetailsComponent({ idProduct }) {
             return res.data
         }
     }
+
 
     const handleChangeCount = (type) => {
         console.log('type', type)
@@ -41,8 +47,36 @@ function ProductDetailsComponent({ idProduct }) {
         }
         return stars;
     };
-
     const { isLoading, data: productDetails } = useQuery({ queryKey: ['products-details', idProduct], queryFn: fetchGetDetailsProduct, enable: !!idProduct })
+    const handleAddOrderProduct = () => {
+        if (!user?.id) {
+            navigate('/sign-in', { state: location?.pathname })
+        } else {
+            // {
+            //     name:{type:String, required:true},
+            //     amount:{type:Number, required:true},
+            //     image:{type:String, required:true},
+            //     price:{type:String, required:true},
+            //     product:{
+            //         type: mongoose.Schema.Types.ObjectId,
+            //         ref:'Product',
+            //         required:true,
+            //     },
+            // },
+            dispatch(addOrderProduct({
+                orderItem: {
+                    name: productDetails?.name,
+                    amount: numProduct,
+                    image: productDetails?.image,
+                    price: productDetails?.price,
+                    product: productDetails?._id
+                }
+            }))
+        }
+    }
+
+
+    console.log('productDetails', productDetails, user)
     return (
         <Loading isLoading={isLoading}>
             <Row style={{ padding: '16px', background: '#fff', borderRadius: '4px' }}>
@@ -87,11 +121,11 @@ function ProductDetailsComponent({ idProduct }) {
                     <div style={{ margin: '10px 0 20px', padding: '10px 0', borderTop: '1px solid #e5e5e5', borderBottom: '1px solid #e5e5e5' }}>
                         <div style={{ marginBottom: '10px' }}>Số lượng</div>
                         <WrapperQualityProduct>
-                            <button style={{ border: 'none', background: 'transparent', cursor:'pointer' }} onClick={() => handleChangeCount('decrease')}>
+                            <button style={{ border: 'none', background: 'transparent', cursor: 'pointer' }} onClick={() => handleChangeCount('decrease')}>
                                 <MinusOutlined style={{ color: '#000', fontSize: '20px' }} />
                             </button>
                             <WrapperInputNumber onChange={onChange} defaultValue={1} value={numProduct} size='small' />
-                            <button style={{ border: 'none', background: 'transparent', cursor:'pointer' }} onClick={() => handleChangeCount('increase')}>
+                            <button style={{ border: 'none', background: 'transparent', cursor: 'pointer' }} onClick={() => handleChangeCount('increase')}>
                                 <PlusOutlined style={{ color: '#000', fontSize: '20px' }} />
                             </button>
                         </WrapperQualityProduct>
@@ -106,6 +140,7 @@ function ProductDetailsComponent({ idProduct }) {
                                 border: 'none',
                                 borderRadius: '4px'
                             }}
+                            onClick={handleAddOrderProduct}
                             textButton={'Chọn mua'}
                             styleTextButton={{ color: '#fff', fontSize: '15px', fontWeight: '700' }}
                         ></ButtonComponent>

@@ -40,3 +40,11 @@ export const renderOptions = (arr) =>{
     })
     return results
 }
+
+export const converPrice = (price) => {
+  try{
+
+  } catch (error) {
+    return null
+  }
+}
