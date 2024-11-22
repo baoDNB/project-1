@@ -8,10 +8,10 @@ import ButtonComponent from "../ButtonComponent/ButtonComponent";
 import * as ProductService from '../../services/ProductService'
 import { useQuery } from '@tanstack/react-query'
 import Loading from '../LoadingComponent/Loading'
-import { render } from '@testing-library/react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Navigate, useLocation, useNavigate } from 'react-router'
+import {  useLocation, useNavigate } from 'react-router'
 import { addOrderProduct } from '../../redux/silces/orderSilce'
+import { convertPrice } from '../../utils'
 
 
 function ProductDetailsComponent({ idProduct }) {
@@ -111,7 +111,7 @@ function ProductDetailsComponent({ idProduct }) {
                         <WrapperStyleTextSell> | Đã bán 100+</WrapperStyleTextSell>
                     </div>
                     <WrapperPriceProduct>
-                        <WrapperTextProduct>{productDetails?.price}</WrapperTextProduct>
+                        <WrapperTextProduct>{convertPrice(productDetails?.price)}</WrapperTextProduct>
                     </WrapperPriceProduct>
                     <WrapperAddressProduct>
                         <span>Giao đến </span>

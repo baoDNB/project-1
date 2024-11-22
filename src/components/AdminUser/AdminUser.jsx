@@ -28,10 +28,8 @@ const AdminUser = () => {
 
   const [form] = Form.useForm();
 
-  console.log('rowSelected', rowSelected)
   const mutationUpdate = useMutationHooks(
     (data) => {
-      console.log('data', data)
       const { id, token, ...rests } = data
       const res = UserService.updateUser(id, { ...rests }, token)
       return res
@@ -71,7 +69,7 @@ const AdminUser = () => {
 
 
   const getAllUsers = async () => {
-    const res = await UserService.getAllUser()
+    const res = await UserService.getAllUser(user?.access_token)
     console.log('res', res)
     return res
   }
