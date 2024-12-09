@@ -28,7 +28,7 @@ const AdminProduct = () => {
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef(null);
-  const [stateProduct, setStateProduct] = useState({
+  const initial = () => ({
     name: '',
     price: '',
     description: '',
@@ -37,8 +37,10 @@ const AdminProduct = () => {
     type: '',
     countInstock: '',
     newType: '',
-    discount:''
-  })
+    discount: ''
+  }
+  )
+  const [stateProduct, setStateProduct] = useState(initial())
   const [form] = Form.useForm();
   const mutation = useMutationHooks(
     (data) => {
@@ -56,7 +58,6 @@ const AdminProduct = () => {
       return res
     }
   )
-  console.log('rowSelected', rowSelected)
   const mutationUpdate = useMutationHooks(
     (data) => {
 
@@ -79,17 +80,7 @@ const AdminProduct = () => {
       return res
     },
   )
-  console.log('mutationDeletedMany', mutationDeletedMany)
-  const [stateProductDetails, setStateProductDetails] = useState({
-    name: '',
-    price: '',
-    description: '',
-    rating: '',
-    image: '',
-    type: '',
-    countInstock: '',
-    discount: '',
-  })
+  const [stateProductDetails, setStateProductDetails] = useState(initial())
 
 
   const getAllProducts = async () => {
@@ -115,8 +106,13 @@ const AdminProduct = () => {
   }
 
   useEffect(() => {
-    form.setFieldsValue(stateProductDetails)
-  }, [form, stateProductDetails])
+    if (!isModalOpen) {
+      form.setFieldsValue(stateProductDetails)
+    } else {
+      form.setFieldsValue(initial())
+    }
+
+  }, [form, stateProductDetails, isModalOpen])
 
   useEffect(() => {
     if (rowSelected && isOpenDrawer) {
@@ -151,7 +147,6 @@ const AdminProduct = () => {
   const queryProduct = useQuery({ queryKey: ["products"], queryFn: getAllProducts })
   const typeProduct = useQuery({ queryKey: ["type-product"], queryFn: fetcAllTypeProduct })
 
-  console.log('type', typeProduct)
   const { isLoading: isLoadingProducts, data: products } = queryProduct
   const renderAction = () => {
     return (
@@ -258,20 +253,19 @@ const AdminProduct = () => {
       sorter: (a, b) => a.price - b.price,
       filters: [
         {
-          text: '>= 500',
+          text: '>= 500000',
           value: '>=',
         },
         {
-          text: '<= 500',
+          text: '<= 500000',
           value: '<=',
         },
       ],
       onFilter: (value, record) => {
-        console.log('value', [value, record])
         if (value === '>=') {
-          return record.price >= 500
+          return record.price >= 500000
         }
-        return record.price <= 500
+        return record.price <= 500000
       },
     },
     {
@@ -289,7 +283,6 @@ const AdminProduct = () => {
         },
       ],
       onFilter: (value, record) => {
-        console.log('checkrating', { value, record })
         if (value === '>=') {
           return Number(record.rating) >= 3
         }
@@ -347,7 +340,7 @@ const AdminProduct = () => {
       image: '',
       type: '',
       countInstock: '',
-    
+
     })
     form.resetFields()
   }
@@ -383,7 +376,7 @@ const AdminProduct = () => {
       image: '',
       type: '',
       countInstock: '',
-      discount:''
+      discount: ''
     })
     form.resetFields()
   }
@@ -436,7 +429,6 @@ const AdminProduct = () => {
       image: file.preview
     });
   };
-  console.log('user', user)
   const onUpdateProduct = () => {
     mutationUpdate.mutate({ id: rowSelected, token: user?.access_token, ...stateProductDetails }, {
       onSettled: () => {
@@ -614,7 +606,7 @@ const AdminProduct = () => {
             <Form.Item
               label="Description"
               name="description"
-              rules={[{ required: true, message: 'Please input your description!' }]}
+             
             >
               <InputComponent value={stateProductDetails?.description} onChange={handleOnchangeDetails} name="description" />
             </Form.Item>
@@ -656,7 +648,7 @@ const AdminProduct = () => {
             </Form.Item>
             <Form.Item wrapperCol={{ offset: 20, span: 4 }}>
               <Button type="primary" htmlType="submit">
-                Update
+                Cập nhật
               </Button>
             </Form.Item>
           </Form>

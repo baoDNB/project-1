@@ -52,7 +52,6 @@ const AdminUser = () => {
   }
   const mutationDeleted = useMutationHooks(
     (data) => {
-      console.log('data', data)
       const { id, token } = data
       const res = UserService.deleteUser(id, token)
       return res
@@ -70,7 +69,6 @@ const AdminUser = () => {
 
   const getAllUsers = async () => {
     const res = await UserService.getAllUser(user?.access_token)
-    console.log('res', res)
     return res
   }
 
@@ -111,7 +109,6 @@ const AdminUser = () => {
 
 
 
-  console.log('dataUpdated', dataUpdated)
   const queryUser = useQuery({ queryKey: ["users"], queryFn: getAllUsers })
   const { isLoading: isLoadingUsers, data: users } = queryUser
   const renderAction = () => {
@@ -327,7 +324,6 @@ const AdminUser = () => {
       avatar: file.preview
     });
   };
-  console.log('user', user)
   const onUpdateUser = () => {
     mutationUpdate.mutate({ id: rowSelected, token: user?.access_token, ...stateProductUserDetails }, {
       onSettled: () => {
@@ -335,7 +331,6 @@ const AdminUser = () => {
       }
     })
   }
-
   return (
     <div>
       <WrapperHeader>Quản lý người dùng</WrapperHeader>
@@ -412,7 +407,7 @@ const AdminUser = () => {
             </Form.Item>
             <Form.Item wrapperCol={{ offset: 20, span: 4 }}>
               <Button type="primary" htmlType="submit">
-                Update
+                Cập nhật
               </Button>
             </Form.Item>
           </Form>

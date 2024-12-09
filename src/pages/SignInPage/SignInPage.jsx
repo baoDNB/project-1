@@ -28,17 +28,15 @@ const SignInPage = () => {
   const { data, isPending, isSuccess } = mutation
 
   useEffect(() => {
-    console.log('location', location)
     if (isSuccess) {
-      if(location?.state){
+      if (location?.state) {
         navigate(location?.state)
-      }else{
+      } else {
         navigate('/')
       }
       localStorage.setItem('access_token', JSON.stringify(data?.access_token))
       if (data?.access_token) {
         const decoded = jwtDecode(data?.access_token)
-        console.log('decode', decoded)
         if (decoded?.id) {
           handleGetDetailsUser(decoded?.id, data?.access_token)
         }
@@ -51,7 +49,6 @@ const SignInPage = () => {
     dispatch(updateUser({ ...res?.data, access_token: token }))
   }
 
-  console.log('mutation', mutation)
   const handleNavigateSingUp = () => {
     navigate('/sign-up', email, password)
   }
@@ -66,7 +63,6 @@ const SignInPage = () => {
       email,
       password
     })
-    console.log('sign-in', email, password)
   }
   return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgb(0,0,0,0.53)', height: '100vh' }}>
@@ -114,7 +110,7 @@ const SignInPage = () => {
                 margin: '26px 0 10px',
               }}
               textButton={'Đăng nhập'}
-              styleTextButton={{ color: '#fff', fontSize: '15px', fontWeight: '700' }}
+              styletextButton={{ color: '#fff', fontSize: '15px', fontWeight: '700' }}
             >
             </ButtonComponent>
           </Loading>

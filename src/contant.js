@@ -4,6 +4,7 @@ export const orderContant ={
         be: 'BE'
     },
     payment:{
-        later_money:'Thanh toán tiền mặt khi nhận hàng',  
+        later_money: 'Thanh toán tiền mặt khi nhận hàng',  
+        paypal:'Thanh toán bằng pay-pal'
     }      
 }

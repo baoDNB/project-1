@@ -35,7 +35,7 @@ export const userSlice = createSlice({
       state.id = '';
       state.address='';
       state.phone=''
-      state.access_token = false
+      state.isAdmin = false
       state.city = ''
     },
   }

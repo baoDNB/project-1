@@ -16,6 +16,7 @@ const initialState = {
     paidAt: '',
     isDelivered: false,
     deliveredAt: '',
+    isSuccessOrder: false
 }
 export const orderSlice = createSlice({
     name: 'order',
@@ -25,17 +26,24 @@ export const orderSlice = createSlice({
             const { orderItem } = action.payload
             const itemOrder = state?.orderItems?.find((item) => item?.product === orderItem.product)
             if (itemOrder) {
-                itemOrder.amount += orderItem?.amount
+                if (itemOrder.amount <= itemOrder.countInstock) {
+                    itemOrder.amount += orderItem?.amount
+                    state.isSuccessOrder = true
+                    state.isErrorOrder = false
+                }
             } else {
                 state.orderItems.push(orderItem)
             }
+        },
+        resetOrder: (state) => {
+            state.isSuccessOrder = false
         },
         increaseAmount: (state, action) => {
             const { idProduct } = action.payload
             const itemOrder = state?.orderItems?.find((item) => item?.product === idProduct)
             const itemOrderSelected = state?.orderItemsSelected?.find((item) => item?.product === idProduct)
             itemOrder.amount++
-            if(itemOrderSelected){
+            if (itemOrderSelected) {
                 itemOrderSelected.amount++
             }
         },
@@ -44,7 +52,7 @@ export const orderSlice = createSlice({
             const itemOrder = state?.orderItems?.find((item) => item?.product === idProduct)
             const itemOrderSelected = state?.orderItemsSelected?.find((item) => item?.product === idProduct)
             itemOrder.amount--
-            if(itemOrderSelected){
+            if (itemOrderSelected) {
                 itemOrderSelected.amount--
             }
         },
@@ -59,9 +67,10 @@ export const orderSlice = createSlice({
             const { listChecked } = action.payload
             const itemOrders = state?.orderItems?.filter((item) => !listChecked.includes(item.product))
             const itemOrdersSelected = state?.orderItemsSelected?.filter((item) => !listChecked.includes(item.product))
+
             state.orderItems = itemOrders
             state.orderItemsSelected = itemOrdersSelected
-            
+
         },
         selectedOrder: (state, action) => {
             const { listChecked } = action.payload
@@ -78,6 +87,6 @@ export const orderSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { addOrderProduct, increaseAmount, decreaseAmount, removeOrderProduct, removeAllOrderProduct, selectedOrder } = orderSlice.actions
+export const { addOrderProduct, increaseAmount, decreaseAmount, removeOrderProduct, removeAllOrderProduct, selectedOrder, resetOrder } = orderSlice.actions
 
 export default orderSlice.reducer

@@ -10,7 +10,6 @@ const TableComponent = (props) => {
     const arr =columns?.filter((col) => col.dataIndex !=='action')
     return arr
   },[columns])
-  console.log('newColumnExport',newColumnExport)
   // rowSelection object indicates the need for row selection
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {

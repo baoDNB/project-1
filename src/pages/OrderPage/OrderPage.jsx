@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from "react";
 import { WrapperCountOrder, WrapperInfo, WrapperItemOrder, WrapperLeft, WrapperListOrder, WrapperPriceDiscount, WrapperRight, WrapperStyleHeader, WrapperStyleHeaderDelivery, WrapperTotal } from "./style";
 import { Checkbox, Form } from "antd";
 import { DeleteOutlined, MinusOutlined, PlusOutlined } from '@ant-design/icons'
-import image from '../../assets/images/test.webp'
 import { WrapperInputNumber } from "../../components/ProductDetailsComponent/style";
 import ButtonComponent from "../../components/ButtonComponent/ButtonComponent";
 import { useDispatch, useSelector } from "react-redux";
@@ -36,7 +35,6 @@ const OrderPage = () => {
     const [form] = Form.useForm();
     const dispatch = useDispatch()
     const onChange = (e) => {
-        console.log('checked=$(e.target.value)');
         if (listChecked.includes(e.target.value)) {
             const newListChecked = listChecked.filter((item) => item !== e.target.value)
             setListChecked(newListChecked)
@@ -44,11 +42,15 @@ const OrderPage = () => {
             setListChecked([...listChecked, e.target.value])
         }
     };
-    const handleChangeCount = (type, idProduct) => {
+    const handleChangeCount = (type, idProduct, limited) => {
         if (type === 'increase') {
-            dispatch(increaseAmount({ idProduct }))
+            if (!limited) {
+                dispatch(increaseAmount({ idProduct }))
+            }
         } else {
-            dispatch(decreaseAmount({ idProduct }))
+            if (!limited) {
+                dispatch(decreaseAmount({ idProduct }))
+            }
         }
 
     }
@@ -95,7 +97,8 @@ const OrderPage = () => {
 
     const priceDiscountMemo = useMemo(() => {
         const result = order?.orderItemsSelected?.reduce((total, cur) => {
-            return total + (cur.discount * cur.amount);
+            const totalDiscount = cur.discount ? cur.discount : 0
+            return total + (cur.price * cur.amount * totalDiscount / 100)
         }, 0)
         if (Number(result)) {
             return result;
@@ -104,11 +107,11 @@ const OrderPage = () => {
     }, [order]);
 
     const diliveryPriceMemo = useMemo(() => {
-        if (priceMemo >= 1000000 && priceMemo < 5000000) {
+        if (priceMemo >= 100000 && priceMemo < 5000000) {
             return 10000
         } else if (priceMemo >= 5000000 || order?.orderItemsSelected.length === 0) {
             return 0
-        } else {
+        } else if (priceMemo < 1000000) {
             return 20000
         }
     }, [priceMemo]);
@@ -169,15 +172,15 @@ const OrderPage = () => {
     const itemsDelivery = [
         {
             title: '20.000 VNĐ',
-            description: 'Dưới 1.000.000 VNĐ',
+            description: 'Dưới 500.000 VNĐ',
         },
         {
             title: '10.000 VNĐ',
-            description: 'Từ 1.000.000 VNĐ đến 5.000.000 VNĐ',
+            description: 'Từ 500.000 VNĐ đến 1.000.000 VNĐ',
         },
         {
             title: '0 VNĐ',
-            description: 'Trên 5.000.000 VNĐ',
+            description: 'Trên 1.000.000 VNĐ',
         },
     ]
 
@@ -185,18 +188,18 @@ const OrderPage = () => {
     return (
         <div style={{ background: '#f5f5fa', width: '100%', height: '100vh' }}>
             <div style={{ height: '100%', width: '1270px', margin: '0 auto' }}>
-                <h3>Giỏ hàng</h3>
+                <h1 style={{ padding: '20px' }}>Giỏ hàng</h1>
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
                     <WrapperLeft>
                         <WrapperStyleHeaderDelivery>
-                            <Step items={itemsDelivery} 
-                            current={
-                                diliveryPriceMemo === 10000 
-                                ? 2
-                                : diliveryPriceMemo === 20000 
-                                ? 1
-                                : order.orderItemsSelected.length === 0 ? 0 
-                                : 3} />
+                            <Step items={itemsDelivery}
+                                current={
+                                    diliveryPriceMemo === 10000
+                                        ? 2
+                                        : diliveryPriceMemo === 20000
+                                            ? 1
+                                            : order.orderItemsSelected.length === 0 ? 0
+                                                : 3} />
                         </WrapperStyleHeaderDelivery>
                         <WrapperStyleHeader>
                             <span style={{ display: 'inline-block', width: '390px' }}>
@@ -212,16 +215,16 @@ const OrderPage = () => {
                         </WrapperStyleHeader>
                         <WrapperListOrder>
                             {order?.orderItems?.map((order) => {
-                                console.log('map', order)
                                 return (
-                                    <WrapperItemOrder>
+                                    <WrapperItemOrder key={order?.product}>
                                         <div style={{ width: '390px', display: 'flex', alignItems: 'center', gap: 4 }}>
                                             <Checkbox onChange={onChange} value={order?.product} checked={listChecked.includes(order?.product)}></Checkbox>
                                             <img src={order?.image} style={{ width: '77px', height: '79px', objectFit: 'cover' }} />
                                             <div style={{
                                                 width: '260px',
-                                                overflow: 'ellipsis',
-                                                whiteSpace: 'nowrap'
+                                                whiteSpace: 'nowrap',
+                                                overflow: 'hidden',
+                                                textOverflow: 'ellipsis',
                                             }}>{order?.name}</div>
                                         </div>
                                         <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -229,11 +232,11 @@ const OrderPage = () => {
                                                 <span style={{ fontSize: '13px', color: '#242424' }}>{convertPrice(order?.price)}</span>
                                             </span>
                                             <WrapperCountOrder>
-                                                <button style={{ border: 'none', background: 'transparent', cursor: 'pointer' }} onClick={() => handleChangeCount('decrease', order?.product)}>
+                                                <button style={{ border: 'none', background: 'transparent', cursor: 'pointer' }} onClick={() => handleChangeCount('decrease', order?.product, order?.amount === 1)}>
                                                     <MinusOutlined style={{ color: '#000', fontSize: '10px' }} />
                                                 </button>
-                                                <WrapperInputNumber defaultValue={order?.amount} value={order?.amount} size="small" />
-                                                <button style={{ border: 'none', background: 'transparent', cursor: 'pointer' }} onClick={() => handleChangeCount('increase', order?.product)}>
+                                                <WrapperInputNumber defaultValue={order?.amount} value={order?.amount} size="small" min={1} max={order.countInstock} />
+                                                <button style={{ border: 'none', background: 'transparent', cursor: 'pointer' }} onClick={() => handleChangeCount('increase', order?.product, order?.amount === order.countInstock, order?.amount === 1)}>
                                                     <PlusOutlined style={{ color: '#000', fontSize: '10px' }} />
                                                 </button>
                                             </WrapperCountOrder>
@@ -246,7 +249,7 @@ const OrderPage = () => {
                         </WrapperListOrder>
                     </WrapperLeft>
                     <WrapperRight>
-                        <div style={{ width: '100%' }}>
+                        <div  style={{width:'400px' }}>
                             <WrapperInfo>
                                 <div>
                                     <span>Địa chỉ: </span>
@@ -262,7 +265,7 @@ const OrderPage = () => {
                                 </div>
                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                                     <span>Giảm giá</span>
-                                    <span style={{ color: '#000', fontSize: '14px', fontWeight: 'bold' }}>{`${priceDiscountMemo} %`}</span>
+                                    <span style={{ color: '#000', fontSize: '14px', fontWeight: 'bold' }}>{convertPrice(priceDiscountMemo)}</span>
                                 </div>
                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                                     <span>Phí giao hàng </span>
@@ -276,6 +279,7 @@ const OrderPage = () => {
                                     <span style={{ color: '#000', fontSize: '11px' }}>(Đã bao gồm VAT nếu có )</span>
                                 </span>
                             </WrapperTotal>
+                            
                         </div>
                         <ButtonComponent
                             onClick={() => handleAddCard()}
@@ -283,12 +287,12 @@ const OrderPage = () => {
                             styleButton={{
                                 background: 'rgb(255, 57, 69)',
                                 height: '48px',
-                                width: '220px',
+                                width: '400px',
                                 border: 'none',
                                 borderRadius: '4px'
                             }}
                             textButton={'Mua hàng'}
-                            styleTextButton={{ color: '#fff', fontSize: '15px', fontWeight: '700' }}>
+                            styletextButton={{ color: '#fff', fontSize: '15px', fontWeight: '700' }}>
                         </ButtonComponent>
                     </WrapperRight>
                 </div>

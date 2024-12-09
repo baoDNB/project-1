@@ -1,6 +1,6 @@
 import { Card, Rate } from "antd"
 import React from "react"
-import { StyleNameProduct, WrapperDiscountText, WrapperPriceDiscountText, WrapperPriceText } from "./style"
+import { StyleNameProduct, WrapperCardStyle, WrapperDiscountText, WrapperPriceDiscountText, WrapperPriceText, WrapperStyledTextSell } from "./style"
 import { useNavigate } from "react-router"
 import { convertPrice } from "../../utils"
 const CardComponent = (props) => {
@@ -10,33 +10,25 @@ const CardComponent = (props) => {
         navigate(`/product-details/${id}`)
     }
     return (
-        <Card
+        <WrapperCardStyle
             hoverable
-            style={{ width: 240 }}
+            style={{ width: '240px' }}
             cover={<img alt="example" src={image} />}
             onClick={() => hnadleDetailsProduct(id)}
+
         >
-            <img
-                style={{
-                    width: '68px',
-                    height: '14px',
-                    position: 'absolute',
-                    top: -1,
-                    left: -1,
-                    borderTopLeftRadius: '3px'
-                }}
-            />
             <Rate allowHalf defaultValue={rating} />
             <StyleNameProduct>{name}</StyleNameProduct>
+            <WrapperStyledTextSell> | Đã bán {selled || 0}+</WrapperStyledTextSell>
             <WrapperPriceText>
                 <span style={{ marginRight: '8px' }}>{convertPrice(price)}</span>
                 <WrapperDiscountText>
-                    -{discount || 5}%
+                    -{discount || 0}%
                 </WrapperDiscountText>
 
             </WrapperPriceText>
 
-        </Card>
+        </WrapperCardStyle>
 
     )
 }

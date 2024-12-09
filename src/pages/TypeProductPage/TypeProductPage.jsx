@@ -24,7 +24,6 @@ const TypeProductPage = () => {
         setLoading(true)
         const res = await ProductService.getProductType(type, page, limit)
         if (res?.status === 'OK') {
-            console.log('res', res)
             setLoading(false)
             setProducts(res?.data)
             setPanigate({...panigate, total: res?.totalPage})
@@ -42,7 +41,6 @@ const TypeProductPage = () => {
         }
     }, [state, panigate.page, panigate.limit])
     const onChange = (current, pageSize) => {
-        console.log({current, pageSize})
         setPanigate({...panigate, page: current -1, limit:pageSize})
      }
     return (

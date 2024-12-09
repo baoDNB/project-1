@@ -17,9 +17,8 @@ const HomePage = () => {
     const [loading, setLoading] = useState(false)
     const [limit, setLimit] = useState(5)
     const [typeProducts, setTypeProducts] = useState([])
-    
+
     const fetchProductAll = async (context) => {
-        console.log('context', context)
         const limit = context?.queryKey && context?.queryKey[1]
         const search = context?.queryKey && context?.queryKey[2]
 
@@ -29,15 +28,15 @@ const HomePage = () => {
 
     const fetcAllTypeProduct = async () => {
         const res = await ProductService.getAllTypeProduct()
-        if(res?.status ==='OK'){
+        if (res?.status === 'OK') {
             setTypeProducts(res?.data)
         }
     }
     const { isLoading, data: products, isPreviousData } = useQuery({ queryKey: ['products', limit, searchDebounce], queryFn: fetchProductAll, retry: 3, retryDelay: 1000, keepPreviousData: true })
 
-    useEffect(()=>{
+    useEffect(() => {
         fetcAllTypeProduct()
-    },[])
+    }, [])
 
     return (
         <Loading isLoading={isLoading || loading}>
@@ -51,8 +50,10 @@ const HomePage = () => {
                 </WrapperTypeProduct>
             </div>
             <div className='body' style={{ width: '100%', backgroundColor: '#efefef' }}>
-                <div id="container" style={{ padding: '0', height: '100%', width: '1270px', margin: '0 auto' }}>
+                <div id="container" style={{ padding: '0', height: '100%', width: '100%', margin: '0 auto' }}>
                     <SliderComponent arrImages={[slider1, slider2, slider3]} />
+                    <div style={{ padding: '0', height: '100%', width: '1270px', margin: '0 auto' }}>
+                    <h1>Sản phẩm bán chạy </h1>
                     <WrapperProducts>
                         {products?.data?.map((product) => {
                             return (
@@ -80,10 +81,11 @@ const HomePage = () => {
                                 border: '1px solid rgb(11,116,229)', color: `${products?.total === products?.data?.length ? '#ccc' : 'rgb(11,116,229)'}`,
                                 width: '240px', height: '38px', borderRadius: '4px'
                             }}
-                            disabled={products?.total === products?.data?.length || products?.totalPage ===1}
-                            styleTextButton={{ fontWeight: 500, color: products?.total === products?.data?.length && '#fff' }}
+                            disabled={products?.total === products?.data?.length || products?.totalPage === 1}
+                            styletextButton={{ fontWeight: 500, color: products?.total === products?.data?.length && '#fff' }}
                             onClick={() => setLimit((prev) => prev + 5)}
                         />
+                    </div>
                     </div>
                 </div>
             </div>

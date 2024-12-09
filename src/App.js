@@ -89,7 +89,8 @@ function App() {
             const ischeckAuth= !route.isPrivate  || user.isAdmin
             const Layout=  route.isShowHeader ? DefaultComponent :Fragment
             return (
-              <Route key={route.path} path={ischeckAuth ? route.path : undefined} element={          <Layout>
+              <Route key={route.path} path={ischeckAuth ? route.path : undefined} element={          
+              <Layout>
                   <Page/>
                 </Layout>
               }/>

@@ -1,15 +1,17 @@
 import { Menu } from 'antd'
 import React, { useState } from 'react'
 import { getItem } from '../../utils';
-import { UserOutlined, AppstoreOutlined} from '@ant-design/icons'
+import { UserOutlined, AppstoreOutlined, ShoppingCartOutlined} from '@ant-design/icons'
 import HeaderComponent from '../../components/HeaderComponent/HeaderComponent';
 import AdminUser from '../../components/AdminUser/AdminUser';
 import AdminProduct from '../../components/AdminProduct/AdminProduct';
+import OrderAdmin from '../../components/OrderAdmin/OrderAdmin';
 
 const AdminPage = () => {
   const items = [
     getItem('Người dùng', 'user', <UserOutlined />),
     getItem('Sản phẩm', 'product', <AppstoreOutlined />),
+    getItem('Đơn hàng', 'order', <ShoppingCartOutlined/>),
   ];
   const [keySelected, setKeySelected] = useState('')
 
@@ -23,6 +25,10 @@ const AdminPage = () => {
         return(
           <AdminProduct/>
         )
+        case 'order':
+        return(
+          <OrderAdmin/>
+        )
       default:
         return<></>
     }
@@ -32,7 +38,6 @@ const AdminPage = () => {
   const handleOnClick = ({ key})=>{
     setKeySelected(key)
   }
-  console.log('keySelected',keySelected)
   return (
     <>
     <HeaderComponent isHiddenSearch isHiddenCart/>
