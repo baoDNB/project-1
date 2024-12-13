@@ -18,7 +18,7 @@ const OrderSuccess = () => {
     const location = useLocation()
     const { state } = location
     return (
-        <div style={{ background: '#f5f5fa', width: '100%', height: '100vh' }}>
+        <div style={{ background: '#f5f5fa', width: '100%', padding: '10px' }}>
             <Loading isLoading={false}>
                 <div style={{ height: '100%', width: '1270px', margin: '0 auto' }}>
                     <h1>Đơn hàng đặt thành công </h1>

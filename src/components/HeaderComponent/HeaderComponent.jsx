@@ -11,6 +11,7 @@ import * as UserService from '../../services/UserService';
 import { resetUser } from '../../redux/silces/userSlice'
 import Loading from "../LoadingComponent/Loading";
 import { searchProduct } from "../../redux/silces/productSlice";
+import { resetOrder } from '../../redux/silces/orderSilce';
 
 
 const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
@@ -30,6 +31,7 @@ const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
         setLoading(true)
         await UserService.logoutUser()
         navigate('/')
+        dispatch(resetOrder())
         dispatch(resetUser())
         setLoading(false)
     }

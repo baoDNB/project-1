@@ -62,8 +62,8 @@ const AdminUser = () => {
     email: '',
     phone: '',
     isAdmin: false,
-    avatar:'',
-    address:''
+    avatar: '',
+    address: ''
   })
 
 
@@ -80,8 +80,8 @@ const AdminUser = () => {
         email: res?.data?.email,
         phone: res?.data?.phone,
         isAdmin: res?.data?.isAdmin,
-        address:res?.data?.address,
-        avatar:res?.data?.avatar
+        address: res?.data?.address,
+        avatar: res?.data?.avatar
       })
     }
     setIsLoadingUpdate(false)
@@ -252,11 +252,13 @@ const AdminUser = () => {
     },
   ];
   const dataTable = users?.data?.length
-    ? users.data.map((user) => ({
-      ...user,
-      key: user._id,
-      isAdmin: user.isAdmin ? 'TRUE' : 'FALSE',
-    }))
+    ? users.data
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+      .map((user) => ({
+        ...user,
+        key: user._id,
+        isAdmin: user.isAdmin ? 'TRUE' : 'FALSE',
+      }))
     : [];
 
 

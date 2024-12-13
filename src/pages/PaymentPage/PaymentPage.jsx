@@ -68,23 +68,24 @@ const PaymentPage = () => {
         }
         return 0;
     }, [order]);
-
     const diliveryPriceMemo = useMemo(() => {
-        if (priceMemo > 1000000) {
-            return 10000
-        } else if (priceMemo === 0) {
-            return 0
-        } else {
-            return 20000
+        if (priceMemo < 500000) {
+            return 20000; // Dưới 500.000 đồng
+        } else if (priceMemo >= 500000 && priceMemo < 1000000) {
+            return 10000; // Từ 500.000 đến dưới 1 triệu
+        } else if (priceMemo >= 1000000) {
+            return 0; // Trên 1 triệu
         }
-    }, [order]);
+        return 0; // Mặc định
+    }, [priceMemo]);
+
 
     const totalPriceMemo = useMemo(() => {
         return Number(priceMemo) - Number(priceDiscountMemo) + Number(diliveryPriceMemo)
     }, [priceMemo, priceDiscountMemo, diliveryPriceMemo])
 
     const handleAddOrder = () => {
-        if (isSubmitting) return; // Chặn gọi lại khi đang xử lý
+        if (isSubmitting) return;
         setIsSubmitting(true);
 
         if (user?.access_token && order?.orderItemsSelected && user?.name

@@ -107,14 +107,21 @@ const OrderPage = () => {
     }, [order]);
 
     const diliveryPriceMemo = useMemo(() => {
-        if (priceMemo >= 100000 && priceMemo < 5000000) {
-            return 10000
-        } else if (priceMemo >= 5000000 || order?.orderItemsSelected.length === 0) {
-            return 0
-        } else if (priceMemo < 1000000) {
-            return 20000
+        if (order?.orderItemsSelected.length === 0) {
+            return 0; // Không có sản phẩm nào được chọn
         }
-    }, [priceMemo]);
+        if (priceMemo < 500000) {
+            return 20000; // Dưới 500.000 VNĐ
+        }
+        if (priceMemo >= 500000 && priceMemo < 1000000) {
+            return 10000; // Từ 500.000 VNĐ đến 1.000.000 VNĐ
+        }
+        if (priceMemo >= 1000000) {
+            return 0; // Trên 1.000.000 VNĐ
+        }
+        return 0; // Giá trị mặc định (nếu logic không khớp)
+    }, [priceMemo, order?.orderItemsSelected.length]);
+
 
     const totalPriceMemo = useMemo(() => {
         return Number(priceMemo) - Number(priceDiscountMemo) + Number(diliveryPriceMemo)
@@ -186,21 +193,30 @@ const OrderPage = () => {
 
 
     return (
-        <div style={{ background: '#f5f5fa', width: '100%', height: '100vh' }}>
+        <div style={{ background: '#f5f5fa', width: '100%', padding: '10px' }}>
             <div style={{ height: '100%', width: '1270px', margin: '0 auto' }}>
                 <h1 style={{ padding: '20px' }}>Giỏ hàng</h1>
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
                     <WrapperLeft>
                         <WrapperStyleHeaderDelivery>
-                            <Step items={itemsDelivery}
-                                current={
-                                    diliveryPriceMemo === 10000
-                                        ? 2
-                                        : diliveryPriceMemo === 20000
-                                            ? 1
-                                            : order.orderItemsSelected.length === 0 ? 0
-                                                : 3} />
+                            {order?.orderItemsSelected.length > 0 && priceMemo > 0 ? (
+                                <Step
+                                    items={itemsDelivery}
+                                    current={
+                                        priceMemo < 500000
+                                            ? 0
+                                            : priceMemo >= 500000 && priceMemo < 1000000
+                                                ? 1
+                                                : priceMemo >= 1000000
+                                                    ? 2
+                                                    : -1
+                                    }
+                                />
+                            ) : (
+                                <Step items={itemsDelivery} current={null} />
+                            )}
                         </WrapperStyleHeaderDelivery>
+
                         <WrapperStyleHeader>
                             <span style={{ display: 'inline-block', width: '390px' }}>
                                 <Checkbox onChange={handleOnchangeCheckAll} checked={listChecked?.length === order?.orderItems?.length}></Checkbox>
@@ -249,7 +265,7 @@ const OrderPage = () => {
                         </WrapperListOrder>
                     </WrapperLeft>
                     <WrapperRight>
-                        <div  style={{width:'400px' }}>
+                        <div style={{ width: '400px' }}>
                             <WrapperInfo>
                                 <div>
                                     <span>Địa chỉ: </span>
@@ -279,7 +295,7 @@ const OrderPage = () => {
                                     <span style={{ color: '#000', fontSize: '11px' }}>(Đã bao gồm VAT nếu có )</span>
                                 </span>
                             </WrapperTotal>
-                            
+
                         </div>
                         <ButtonComponent
                             onClick={() => handleAddCard()}

@@ -300,9 +300,15 @@ const AdminProduct = () => {
       render: renderAction,
     },
   ];
-  const dataTable = products?.data?.length && products?.data?.map((product) => {
-    return { ...product, key: product._id }
-  })
+  const dataTable = products?.data?.length
+    ? products.data
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // Sắp xếp giảm dần theo createdAt
+      .map((product) => ({
+        ...product,
+        key: product._id,
+      }))
+    : [];
+
 
   useEffect(() => {
     if (isSuccess && data?.status === 'OK') {
@@ -606,7 +612,7 @@ const AdminProduct = () => {
             <Form.Item
               label="Description"
               name="description"
-             
+
             >
               <InputComponent value={stateProductDetails?.description} onChange={handleOnchangeDetails} name="description" />
             </Form.Item>

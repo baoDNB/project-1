@@ -23,26 +23,27 @@ const SignInPage = () => {
   const navigate = useNavigate()
 
   const mutation = useMutationHooks(
-    data => UserService.loginUser(data)
+    data => UserService.loginUser(data),
+    
   )
   const { data, isPending, isSuccess } = mutation
 
   useEffect(() => {
-    if (isSuccess) {
+    if (isSuccess && data?.status === 'OK') {
       if (location?.state) {
-        navigate(location?.state)
+        navigate(location?.state);
       } else {
-        navigate('/')
+        navigate('/');
       }
-      localStorage.setItem('access_token', JSON.stringify(data?.access_token))
+      localStorage.setItem('access_token', JSON.stringify(data?.access_token));
       if (data?.access_token) {
-        const decoded = jwtDecode(data?.access_token)
+        const decoded = jwtDecode(data?.access_token);
         if (decoded?.id) {
-          handleGetDetailsUser(decoded?.id, data?.access_token)
+          handleGetDetailsUser(decoded?.id, data?.access_token);
         }
       }
     }
-  }, [isSuccess])
+  }, [isSuccess]);
 
   const handleGetDetailsUser = async (id, token) => {
     const res = await UserService.getDetailsUser(id, token)
@@ -62,8 +63,9 @@ const SignInPage = () => {
     mutation.mutate({
       email,
       password
-    })
+    });
   }
+
   return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgb(0,0,0,0.53)', height: '100vh' }}>
       <div style={{ width: '800px', height: '445px', borderRadius: '6px', background: '#fff', display: 'flex' }}>
@@ -96,6 +98,7 @@ const SignInPage = () => {
           </div>
 
           {data?.status === 'ERR' && <span style={{ color: 'red' }}>{data?.message}</span>}
+
           <Loading isLoading={isPending}>
             <ButtonComponent
               disabled={!email.length || !password.length}

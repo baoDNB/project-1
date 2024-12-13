@@ -28,7 +28,7 @@ const DetailsOrderPage = () => {
     }, [data]);
   
     return (
-        <div style={{ width: '100%', height: '100vh', background: '#f5f5fa' }}>
+        <div style={{ width: '100%',padding:'10px', background: '#f5f5fa' }}>
             <div style={{ width: '1270px', margin: '0 auto' }}>
                 <h1>Chi tiết đơn hàng</h1>
 

@@ -23,7 +23,7 @@ const MyOrderPage = () => {
         enabled: !!state?.id && !!state?.token
     })
     const { isPending, data } = queryOrder
-
+    const sortedOrders = data?.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     const handleDetailsOrder = (id) => {
         navigate(`/details-order/${id}`, {
             state: {
@@ -39,7 +39,7 @@ const MyOrderPage = () => {
         },
     )
     const handleCancelOrder = (order) => {
-        if (mutation.isLoading) return; // Tránh gọi lại nếu đã đang trong trạng thái loading
+        if (mutation.isPending) return; // Tránh gọi lại nếu đã đang trong trạng thái loading
         mutation.mutate(
             { id: order._id, token: state?.token, orderItems: order?.orderItems },
             {
@@ -50,7 +50,7 @@ const MyOrderPage = () => {
         );
     };
 
-    const { isLoading: isLoadingCancel, isSuccess: isSuccessCancel, isError: isErrorCancel, data: dataCancel } = mutation
+    const { isPending: isLoadingCancel, isSuccess: isSuccessCancel, isError: isErrorCancel, data: dataCancel } = mutation
     useEffect(() => {
         if (isSuccessCancel && dataCancel?.statu === 'OK') {
             message.success()
@@ -88,7 +88,7 @@ const MyOrderPage = () => {
                         fontweight: 'bold',
                     }}>Đơn hàng của tôi </h1>
                     <WrapperListOrder>
-                        {data?.map((order) => {
+                        {sortedOrders?.map((order) => {
                             return (
                                 <WrapperItemOrder key={order?._id}>
                                     <WrapperStatus>
@@ -136,6 +136,7 @@ const MyOrderPage = () => {
                             )
                         })}
                     </WrapperListOrder>
+
                 </div>
             </WrapperContainer>
         </Loading>

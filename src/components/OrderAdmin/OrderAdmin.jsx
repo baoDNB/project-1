@@ -151,17 +151,19 @@ const OrderAdmin = () => {
   ];
 
   const dataTable = orders?.data?.length
-    ? orders.data.map((order) => ({
-      ...order,
-      key: order._id,
-      userName: order?.shippingAddress?.fullName,
-      phone: order?.shippingAddress?.phone,
-      address: order?.shippingAddress?.address,
-      paymentMethod: orderContant.payment[order?.paymentMethod],
-      isPaid: order?.isPaid ? 'TRUE' : 'FALSE',
-      isDelivered: order?.isDelivered ? 'TRUE' : 'FALSE',
-      totalPrice: convertPrice(order?.totalPrice)
-    }))
+    ? orders.data
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // Sắp xếp giảm dần theo createdAt
+      .map((order) => ({
+        ...order,
+        key: order._id,
+        userName: order?.shippingAddress?.fullName,
+        phone: order?.shippingAddress?.phone,
+        address: order?.shippingAddress?.address,
+        paymentMethod: orderContant.payment[order?.paymentMethod],
+        isPaid: order?.isPaid ? 'TRUE' : 'FALSE',
+        isDelivered: order?.isDelivered ? 'TRUE' : 'FALSE',
+        totalPrice: convertPrice(order?.totalPrice)
+      }))
     : [];
   return (
     <div>
